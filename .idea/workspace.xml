@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9f8a8112-cadf-42a1-9954-29c4b1948b0c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ch/hslu/dmg/library/ObjectBase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ch/hslu/dmg/library/Adresse.java" afterPath="$PROJECT_DIR$/src/ch/hslu/dmg/library/Adresse.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Bestellsystem.iws" />
@@ -499,17 +497,21 @@
       <changelist id="9f8a8112-cadf-42a1-9954-29c4b1948b0c" name="Default" comment="" />
       <created>1399407325666</created>
       <updated>1399407325666</updated>
-      <workItem from="1399407328930" duration="3057000" />
+      <workItem from="1399407328930" duration="3093000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Checkin">
       <created>1399408220827</created>
       <updated>1399408220827</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Object Base added">
+      <created>1399410400136</created>
+      <updated>1399410400136</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3057000" />
+    <option name="totallyTimeSpent" value="3093000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="960" y="0" width="960" height="1040" extended-state="0" />
@@ -561,7 +563,8 @@
       <TodoPanelSettings />
     </option>
     <MESSAGE value="Initial Checkin" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial Checkin" />
+    <MESSAGE value="Object Base added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Object Base added" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
