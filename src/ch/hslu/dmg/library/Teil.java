@@ -3,5 +3,42 @@ package ch.hslu.dmg.library;
 /**
  * @author Angelo on 06.05.2014.
  */
-public class Teil {
+public class Teil extends ObjectBase {
+    private String _Bezeichnung;
+    private float _Groesse;
+    private float _Preis;
+    private Boolean _IsFertigungsteil;
+
+
+    public String get_Bezeichnung() {
+        return _Bezeichnung;
+    }
+
+    public void set_Bezeichnung(String _Bezeichnung) {
+        this._Bezeichnung = _Bezeichnung;
+    }
+
+    public float get_Groesse() {
+        return _Groesse;
+    }
+
+    public void set_Groesse(float _Groesse) {
+        this._Groesse = _Groesse;
+    }
+
+    public float get_Preis() {
+        return _Preis;
+    }
+
+    public void set_Preis(float _Preis) {
+        this._Preis = _Preis;
+    }
+
+    public Boolean get_IsFertigungsteil() {
+        return _IsFertigungsteil;
+    }
+
+    public void set_IsFertigungsteil(Boolean _IsFertigungsteil) {
+        this._IsFertigungsteil = _IsFertigungsteil;
+    }
 }
