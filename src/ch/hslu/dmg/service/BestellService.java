@@ -1,6 +1,6 @@
 package ch.hslu.dmg.service;
 
-import ch.hslu.dmg.library.collection.PersonCol;
+import ch.hslu.dmg.library.collection.*;
 
 /**
  * @author Angelo on 08.05.2014.
@@ -9,4 +9,9 @@ public class BestellService {
     public PersonCol GetAllPersonen(){
         return new PersonCol();
     }
+    public MitarbeiterCol GetAllMitarbeiter() { return new MitarbeiterCol(); }
+    public MaschineCol GetAllMaschine(){return new MaschineCol();}
+    public FertigungsteilCol GetAllFertigungsteil(){return new FertigungsteilCol();}
+    public FertigungsschrittCol GetAllFertigungsschritt() {return new FertigungsschrittCol();}
+    public TeilCol GetAllTeil(){return new TeilCol();}
 }

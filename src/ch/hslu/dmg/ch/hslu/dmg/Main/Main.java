@@ -11,8 +11,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        AdresseDAO adresseDAO = new AdresseDAO();
-        adresseDAO.readAdresse(1);
-
+        //AdresseDAO adresseDAO = new AdresseDAO();
+        //adresseDAO.readAdresse(1);
+        BestellEingang b = new BestellEingang();
+        b.setVisible(true);
     }
 }
