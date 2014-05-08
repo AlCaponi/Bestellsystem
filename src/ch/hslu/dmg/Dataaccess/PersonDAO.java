@@ -8,7 +8,7 @@ import ch.hslu.dmg.library.Person;
 public class PersonDAO extends BaseDao {
 
     private String SqlReadPerson =        "SELECT \n"
-                    + "       [ID]\n"
+                    + "       [ID]           \n"
                     + "	     ,[Name]\n"
                     + "      ,[AdresseID]\n"
                     + "      ,[BankverbindungID]\n"

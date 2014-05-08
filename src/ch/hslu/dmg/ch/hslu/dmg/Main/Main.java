@@ -1,5 +1,6 @@
 package ch.hslu.dmg.ch.hslu.dmg.Main;
 
+import ch.hslu.dmg.Dataaccess.AdresseDAO;
 import ch.hslu.dmg.Dataaccess.Database;
 import ch.hslu.dmg.Dataaccess.PersonDAO;
 
@@ -9,10 +10,9 @@ import ch.hslu.dmg.Dataaccess.PersonDAO;
 public class Main {
 
     public static void main(String[] args) {
-//        Database database = new Database("");
-//        database.connect();
-        PersonDAO personDAO = new PersonDAO();
-        personDAO.readPerson(1);
+
+        AdresseDAO adresseDAO = new AdresseDAO();
+        adresseDAO.readAdresse(1);
 
     }
 }

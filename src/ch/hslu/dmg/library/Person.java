@@ -32,3 +32,4 @@ public class Person extends ObjectBase {
         this._Bankverbindung = _Bankverbindung;
     }
 }
+

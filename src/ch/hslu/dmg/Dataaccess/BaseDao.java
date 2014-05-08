@@ -8,5 +8,6 @@ public class BaseDao {
 
     protected BaseDao(){
         this.Database = new Database("");
+        this.Database.connect();
     }
 }

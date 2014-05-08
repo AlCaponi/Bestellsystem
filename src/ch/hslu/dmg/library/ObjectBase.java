@@ -6,18 +6,17 @@ import java.util.UUID;
  * @author Angelo on 06.05.2014.
  */
 public class ObjectBase {
-    private UUID _ID;
+    private int _ID;
 
-    public UUID getID() {
+    public int get_ID() {
         return _ID;
     }
 
-    public void setID(UUID _ID) {
+    public void set_ID(int _ID) {
         this._ID = _ID;
     }
 
-    public ObjectBase()
-    {
-        this._ID = UUID.randomUUID();
+    public ObjectBase(){
+
     }
 }
