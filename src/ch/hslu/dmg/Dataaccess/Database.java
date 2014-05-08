@@ -1,6 +1,11 @@
 package ch.hslu.dmg.Dataaccess;
 
+import ch.hslu.dmg.library.CollectionBase;
+import sun.org.mozilla.javascript.internal.ast.WhileLoop;
+
+import java.beans.MethodDescriptor;
 import java.beans.Statement;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -54,20 +59,40 @@ public class Database<T> {
         return true;
     }
 
-    public T FillObject(T Type, String sqlCommand) {
+    public T FillObject(T dataObject, String sqlCommand) {
         try {
             PreparedStatement statement = _connection.prepareStatement(sqlCommand);
             ResultSet resultSet = statement.executeQuery();
 
-            while (resultSet.next()) {
-                RecordToObject(resultSet, Type);
+            if (resultSet.next()) {
+                this.RecordToObject(resultSet, dataObject);
+                resultSet.close();
+                return dataObject;
             }
 
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
-        return Type;
+        return dataObject;
     }
+
+
+    public CollectionBase<T> FillList(CollectionBase<T> list, Class<T> elementType, String sqlQuery){
+        try{
+            PreparedStatement statement = _connection.prepareStatement(sqlQuery);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                Object dataObject = elementType.newInstance();
+                this.RecordToObject(resultSet, (T) dataObject);
+                list.add((T) dataObject);
+            }
+            resultSet.close();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 
 
     private void RecordToObject(ResultSet resultSet, T dataObject) {
@@ -79,38 +104,82 @@ public class Database<T> {
             for (Method method : methods) {
                 methodDictionary.put(method.getName(), method);
             }
-            for (int ordinal = 1; ordinal < columnCount; ordinal++) {
+
+
+            for (int ordinal = 1; ordinal < columnCount + 1; ordinal++) {
+
+                String fieldName = "";
+                Object data = dataObject;
+                Object value = resultSet.getObject(ordinal);
+
                 String columnName = metaData.getColumnName(ordinal);
-                Object col = null;
+                String[] ColumnName = columnName.split("\\.");
+                for (int index = 0; index < ColumnName.length - 1; index++) {
 
-                col = resultSet.getObject(ordinal);
-//
-//                String[] columnName = columnName.split(new[] { this._PropertyDelimiter }, StringSplitOptions.None);
-//                for (int index = 0; index < columnName.Length - 1; index++) {
-//                }
+                    fieldName = ColumnName[index];
+                    Method getMethod = methodDictionary.get("get_" + fieldName);
+                    Class<?> field = getMethod.getReturnType();
+                    //Field field = dataObject.getClass().getField("_" + fieldName);
+                    if(field == null){
+                        data = null;
+                        break;
+                    }
 
+                    Object newData = getMethod.invoke(data, null);
 
-                String getMethodName = "get_" + columnName;
-                Method getMethod = methodDictionary.get(getMethodName);
-
-                Object newData = getMethod.invoke(dataObject);
-                Type valueType = getMethod.getReturnType();
-                if (!valueType.getClass().isPrimitive()) {
-                    newData = valueType.getClass().newInstance();
+                    if(newData == null && value != null)
+                    {
+                        Type propertyType = getMethod.getReturnType();
+                        //todo Überprüfen ob hier wirklich String ausgegeben wird falls diese klasse verwendet wird
+                        if (propertyType.getClass().isPrimitive() == false && (!propertyType.getClass().getName().equals("String")) ) {
+                            newData = ((Class)propertyType).newInstance();
+                            Method setMethod = methodDictionary.get("set_" + fieldName);
+                            setMethod.invoke(data, newData);
+                        }
+                    }
+                    data = newData;
+                    if(data == null)
+                    {
+                        break;
+                    }
+                }
+                if(data == null)
+                {
+                    continue;
                 }
 
-                String setMethodName = "set_" + columnName;
-                Method setMethod = methodDictionary.get(setMethodName);
 
+                Method getMethod = data.getClass().getMethod("get_" + ColumnName[ColumnName.length - 1]);//methodDictionary.get("get_" + columnName);
+                Class<?> setProperty = getMethod.getReturnType();
+                //Field setProperty = data.getClass().getDeclaredField("_" + columnName);
 
-                try {
-                    setMethod.invoke(dataObject, col);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
+                if(setProperty != null){
+
+                    Method [] methodsData = data.getClass().getMethods();
+                    Method setMethod = null;
+                    for(Method method : methodsData){
+                        if(method.getName().equals("set_" + ColumnName[ColumnName.length - 1])){
+                            setMethod = method;
+                            break;
+                        }
+                    }
+                    //Method setMethod = data.getClass().getMethod("set_" + columnName);
+                    if(setMethod != null)
+                    {
+                        fieldName = setMethod.getName();
+                        if(value == null)
+                        {
+                            setMethod.invoke(data, null);
+                        }
+                        else if(value != null && value.getClass() == setProperty)
+                        {
+                            setMethod.invoke(data, value);
+                        }
+                        else
+                        {
+                            setMethod.invoke(data, value);
+                        }
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -120,6 +189,8 @@ public class Database<T> {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
     }
