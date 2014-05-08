@@ -1,13 +1,16 @@
 package ch.hslu.dmg.Dataaccess;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.beans.Statement;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.*;
+import java.util.Dictionary;
+import java.util.HashMap;
 
 /**
  * @author Angelo on 07.05.2014.
  */
-public class Database {
+public class Database<T> {
 
     private String _connectionString;
     private Connection _connection;
@@ -49,6 +52,40 @@ public class Database {
         return true;
     }
 
+    public T FillObject(T Type, String sqlCommand){
+        try{
+            PreparedStatement statement = _connection.prepareStatement(sqlCommand);
+            ResultSet resultSet = statement.executeQuery();
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            Method[] methods = Type.getClass().getMethods();
+            HashMap<String, Method> methodDictionary = new HashMap<String, Method>();
+            for(Method method : methods){
+                methodDictionary.put(method.getName(), method);
+            }
+            while (resultSet.next()){
+                for(int idx = 0; idx < columnCount; idx++){
+                    String columnName = metaData.getColumnClassName(idx);
+                    Object col = resultSet.getObject(idx);
+                    String setMethodName = "set_" + columnName;
+                    try {
+                        Type.getClass().getMethod(setMethodName).invoke(col);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+        } catch (SQLException e){
+
+        }
+        return Type;
+    }
 
 
 
