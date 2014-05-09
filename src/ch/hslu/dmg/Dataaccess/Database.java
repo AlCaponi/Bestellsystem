@@ -1,16 +1,11 @@
 package ch.hslu.dmg.Dataaccess;
 
 import ch.hslu.dmg.library.CollectionBase;
-import sun.org.mozilla.javascript.internal.ast.WhileLoop;
 
-import java.beans.MethodDescriptor;
-import java.beans.Statement;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.sql.*;
-import java.util.Dictionary;
 import java.util.HashMap;
 
 /**
@@ -20,7 +15,7 @@ public class Database<T> {
 
     private String _connectionString;
     private Connection _connection;
-    private String _PropertyDelimiter = ".";
+    private String _PropertyDelimiter = "\\.";
 
     public Database(String connectionString) {
         this._connectionString = connectionString;
@@ -65,7 +60,7 @@ public class Database<T> {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                this.RecordToObject(resultSet, dataObject);
+                this.recordToObject(resultSet, dataObject);
                 resultSet.close();
                 return dataObject;
             }
@@ -83,11 +78,11 @@ public class Database<T> {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
                 Object dataObject = elementType.newInstance();
-                this.RecordToObject(resultSet, (T) dataObject);
+                this.recordToObject(resultSet, (T) dataObject);
                 list.add((T) dataObject);
             }
             resultSet.close();
-        } catch(Exception e){
+        } catch (Exception e){
             e.printStackTrace();
         }
         return list;
@@ -95,7 +90,7 @@ public class Database<T> {
 
 
 
-    private void RecordToObject(ResultSet resultSet, T dataObject) {
+    private void recordToObject(final ResultSet resultSet, T dataObject) {
         try {
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
@@ -111,67 +106,65 @@ public class Database<T> {
                 String fieldName = "";
                 Object data = dataObject;
                 Object value = resultSet.getObject(ordinal);
+                String[] columnName = metaData.getColumnName(ordinal).split(this._PropertyDelimiter);
+                for (int index = 0; index < columnName.length - 1; index++) {
 
-                String columnName = metaData.getColumnName(ordinal);
-                String[] ColumnName = columnName.split("\\.");
-                for (int index = 0; index < ColumnName.length - 1; index++) {
-
-                    fieldName = ColumnName[index];
+                    fieldName = columnName[index];
                     Method getMethod = methodDictionary.get("get_" + fieldName);
                     Class<?> field = getMethod.getReturnType();
                     //Field field = dataObject.getClass().getField("_" + fieldName);
-                    if(field == null){
+                    if (field == null) {
                         data = null;
                         break;
                     }
 
                     Object newData = getMethod.invoke(data, null);
 
-                    if(newData == null && value != null)
+                    if (newData == null && value != null)
                     {
                         Type propertyType = getMethod.getReturnType();
                         //todo Überprüfen ob hier wirklich String ausgegeben wird falls diese klasse verwendet wird
-                        if (propertyType.getClass().isPrimitive() == false && (!propertyType.getClass().getName().equals("String")) ) {
-                            newData = ((Class)propertyType).newInstance();
+                        if (!propertyType.getClass().isPrimitive() && (!propertyType.getClass().getName().equals("String")) ) {
+                            newData = ((Class) propertyType).newInstance();
                             Method setMethod = methodDictionary.get("set_" + fieldName);
                             setMethod.invoke(data, newData);
                         }
                     }
                     data = newData;
-                    if(data == null)
+                    if (data == null)
                     {
                         break;
                     }
                 }
-                if(data == null)
+                if (data == null)
                 {
                     continue;
                 }
 
 
-                Method getMethod = data.getClass().getMethod("get_" + ColumnName[ColumnName.length - 1]);//methodDictionary.get("get_" + columnName);
+                Method getMethod = data.getClass().getMethod("get_" + columnName[columnName.length - 1]);//methodDictionary.get("get_" + columnName);
                 Class<?> setProperty = getMethod.getReturnType();
                 //Field setProperty = data.getClass().getDeclaredField("_" + columnName);
 
-                if(setProperty != null){
+                if (setProperty != null){
 
                     Method [] methodsData = data.getClass().getMethods();
                     Method setMethod = null;
-                    for(Method method : methodsData){
-                        if(method.getName().equals("set_" + ColumnName[ColumnName.length - 1])){
+                    for (Method method : methodsData){
+                        if (method.getName().equals("set_" + columnName[columnName.length - 1])){
                             setMethod = method;
                             break;
                         }
                     }
                     //Method setMethod = data.getClass().getMethod("set_" + columnName);
-                    if(setMethod != null)
+                    if (setMethod != null)
                     {
                         fieldName = setMethod.getName();
-                        if(value == null)
+                        if (value == null)
                         {
                             setMethod.invoke(data, null);
                         }
-                        else if(value != null && value.getClass() == setProperty)
+                        else if (value != null && value.getClass() == setProperty)
                         {
                             setMethod.invoke(data, value);
                         }
@@ -193,6 +186,23 @@ public class Database<T> {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * The Save method to save generic Objects.
+     * @param dataObject The object which will be saved
+     * @param sqlQuery The query
+     * @param idColumn If the ID Column is not specified by ID
+     */
+    public final void save(final Object dataObject, final String sqlQuery, final String idColumn){
+        try {
+            PreparedStatement statement = _connection.prepareStatement(sqlQuery);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

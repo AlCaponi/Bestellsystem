@@ -41,11 +41,11 @@ public class PersonDAO extends BaseDao {
         super();
     }
 
-    public Person readPerson(int personId){
+    public final Person readPerson(final int personId){
         return (Person) Database.FillObject(new Person(), String.format(SqlReadPersonWithSub, personId));
     }
 
-    public PersonCol readPersonen(){
+    public final PersonCol readPersonen(){
         return (PersonCol) Database.FillList(new PersonCol(), Person.class, String.format(SqlReadPersonen));
     }
 }
