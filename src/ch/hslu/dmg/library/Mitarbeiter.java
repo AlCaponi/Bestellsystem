@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * @author Angelo on 06.05.2014.
  */
-public class Mitarbeiter{
+public class Mitarbeiter extends ObjectBase{
     private Person _Person;
     private float _Gehalt;
     private Date _Geburtstag;
