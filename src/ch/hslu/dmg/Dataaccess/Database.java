@@ -144,7 +144,13 @@ public class Database<T> {
                 }
 
 
-                Method getMethod = data.getClass().getMethod("get_" + columnName[columnName.length - 1]);//methodDictionary.get("get_" + columnName);
+                Method getMethod = null; //= data.getClass().getMethod("get_" + columnName[columnName.length - 1]);//methodDictionary.get("get_" + columnName);
+                for (Method method : data.getClass().getMethods()){
+                    if (method.getName().equals("get_" + columnName[columnName.length - 1])){
+                        getMethod = method;
+                        break;
+                    }
+                }
                 Class<?> setProperty = getMethod.getReturnType();
                 //Field setProperty = data.getClass().getDeclaredField("_" + columnName);
 
@@ -184,8 +190,6 @@ public class Database<T> {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
     }
