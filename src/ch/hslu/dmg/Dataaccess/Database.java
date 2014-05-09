@@ -1,11 +1,13 @@
 package ch.hslu.dmg.Dataaccess;
 
 import ch.hslu.dmg.library.CollectionBase;
+import com.sun.deploy.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -197,12 +199,75 @@ public class Database<T> {
     public final void save(final Object dataObject, final String sqlQuery, final String idColumn){
         try {
             PreparedStatement statement = _connection.prepareStatement(sqlQuery);
+            ResultSet rs = statement.executeQuery();
+            String entityName = rs.getMetaData().getTableName(1);
+            // If there is a next that means the Object which we want to save already exists
+            if (rs.next())
+            {
+                String insertQuery = "INSERT INTO %s (%s) VALUES (%s)";
+                ResultSetMetaData resultSetMetaData = rs.getMetaData();
+                int columnCount = resultSetMetaData.getColumnCount();
+                HashMap<String, T> columns = new HashMap<String, T>();
+                for (int ordinal = 1; ordinal <= columnCount; ordinal++)
+                {
+                    String columnLabel = resultSetMetaData.getColumnLabel(ordinal);
+                    String columnName = resultSetMetaData.getColumnName(ordinal);
 
+                    String[] columnData = columnLabel.split(this._PropertyDelimiter);
+                    String propertyName = columnData[columnData.length - 1];
+                    String getPropertyMethodName = "get_" + propertyName;
+                    Method getMethod = getMethod(getPropertyMethodName, dataObject);
+                    //Method getMethod = dataObject.getClass().getMethod(getPropertyMethodName);
+                    Object columnValue = getMethod.invoke(dataObject, null);
+                    columns.put(columnName, (T) columnValue);
+                }
+                String allKeys = StringUtils.join(columns.keySet(), ", ");
+                ArrayList<String> allValuesString = new ArrayList<String>();
+                for (Object value : columns.values())
+                {
+                    if (value instanceof String)
+                    {
+                        allValuesString.add(String.format("'%s'", value));
+                    }
+                    else
+                    {
+                        allValuesString.add(String.format("%s", value.toString()));
+                    }
+                }
+                String allValues = StringUtils.join(allValuesString, ", ");
+                insertQuery = String.format(insertQuery, "Adresse", allKeys, allValues);
+                PreparedStatement preparedStatement = _connection.prepareCall(insertQuery);
+                preparedStatement.execute();
+            }
+            // Otherwise there is no Object so we can create an Insert Script
+            else
+            {
+                String updateQuery = "Update %s SET %s WHERE %s = %d";
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
 
+    }
+
+    private void ObjectToRecord(ResultSet next, Object dataObject, String idColumn) {
+        Object tempObject;
+        Class<?> type = Object.class;
+    }
+
+    private Method getMethod(String methodName, Object dataObject){
+        Method[] methods = dataObject.getClass().getMethods();
+        for (Method method : methods){
+            if(method.getName().equals(methodName)){
+                return method;
+            }
+        }
+        return null;
     }
 
 }
