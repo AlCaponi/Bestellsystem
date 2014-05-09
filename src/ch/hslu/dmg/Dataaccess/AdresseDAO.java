@@ -5,7 +5,7 @@ import ch.hslu.dmg.library.Adresse;
 /**
  * @author Angelo on 08.05.2014.
  */
-public class AdresseDAO extends BaseDao {
+public class AdresseDao extends BaseDao {
 
     String sqlReadAdresse  = "SELECT   [AdresseID]      AS ID\n"
                              + "      ,[Ort]            AS Ort\n"
@@ -20,7 +20,7 @@ public class AdresseDAO extends BaseDao {
                              + "      ,[Strasse]        AS [Adresse.Strasse]\n"
                              + "  FROM [dbo].[Adresse]\n";
 
-    public AdresseDAO(){
+    public AdresseDao(){
         super();
     }
 

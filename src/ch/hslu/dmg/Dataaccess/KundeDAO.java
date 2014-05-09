@@ -6,8 +6,8 @@ import ch.hslu.dmg.library.collection.KundeCol;
 /**
  * Created by Dave on 09.05.2014.
  */
-public class KundeDAO extends BaseDao {
-    public KundeDAO()
+public class KundeDao extends BaseDao {
+    public KundeDao()
     {
         super();
     }

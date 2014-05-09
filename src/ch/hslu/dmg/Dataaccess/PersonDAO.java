@@ -6,7 +6,7 @@ import ch.hslu.dmg.library.collection.PersonCol;
 /**
  * @author Angelo on 08.05.2014.
  */
-public class PersonDAO extends BaseDao {
+public class PersonDao extends BaseDao {
 
     private String SqlReadPerson =        "SELECT \n"
                     + "       [ID]           \n"
@@ -37,7 +37,7 @@ public class PersonDAO extends BaseDao {
                                             + "FROM Person \n"
                                             + "    INNER JOIN Adresse \n"
                                             + "ON Adresse.AdresseID = Person.AdresseID\n";
-    public PersonDAO(){
+    public PersonDao(){
         super();
     }
 

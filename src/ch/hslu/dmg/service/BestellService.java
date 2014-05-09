@@ -1,6 +1,7 @@
 package ch.hslu.dmg.service;
 
 import ch.hslu.dmg.Dataaccess.*;
+import ch.hslu.dmg.library.Fertigungsschritt;
 import ch.hslu.dmg.library.Maschine;
 import ch.hslu.dmg.library.collection.*;
 
@@ -8,23 +9,25 @@ import ch.hslu.dmg.library.collection.*;
  * @author Angelo on 08.05.2014.
  */
 public class BestellService {
-    private PersonDAO personDAO;
-    private KundeDAO kundeDAO;
-    private TeilDAO teilDAO;
+    private PersonDao personDao;
+    private KundeDao kundeDao;
+    private TeilDao teilDao;
     private MitarbeiterDao mitarbeiterDao;
     private MaschineDao maschineDao;
+    private FertigungsschrittDao fertigungsschrittDao;
 
 
     public BestellService() {
-        personDAO = new PersonDAO();
-        kundeDAO = new KundeDAO();
-        teilDAO = new TeilDAO();
+        personDao = new PersonDao();
+        kundeDao = new KundeDao();
+        teilDao = new TeilDao();
         mitarbeiterDao = new MitarbeiterDao();
         maschineDao = new MaschineDao();
+        fertigungsschrittDao = new FertigungsschrittDao();
     }
 
     public PersonCol GetAllPersonen() {
-        return personDAO.readPersonen();
+        return personDao.readPersonen();
     }
 
     public MitarbeiterCol GetAllMitarbeiter() {
@@ -44,15 +47,15 @@ public class BestellService {
     }
 
     public TeilCol GetAllTeil() {
-        return teilDAO.readTeil();
+        return teilDao.readTeil();
     }
 
     public KundeCol GetAllKunde() {
-        return kundeDAO.readKunden();
+        return kundeDao.readKunden();
     }
 
     public TeilCol GetSubTeile(int fertigungsTeilID) {
-        return teilDAO.readSubtTeile(fertigungsTeilID);
+        return teilDao.readSubtTeile(fertigungsTeilID);
     }
 
     public MitarbeiterCol GetAllVerfuegbareMitarbeiter() {
@@ -62,8 +65,12 @@ public class BestellService {
     public MaschineCol GetAllVerfuegbareMaschinen() {
         MaschineCol verfuegbareMaschinen = maschineDao.readVerfuegbareMaschinen();
         for (Maschine maschine : verfuegbareMaschinen) {
-            maschine.set_produzierteTeile(teilDAO.readTeileByMaschineID(maschine.get_ID()));
+            maschine.set_produzierteTeile(teilDao.readTeileByMaschineID(maschine.get_ID()));
         }
         return verfuegbareMaschinen;
+    }
+
+    public void SaveFertigungsschritt(Fertigungsschritt fertigungsschritt) {
+        fertigungsschrittDao.Save(fertigungsschritt);
     }
 }

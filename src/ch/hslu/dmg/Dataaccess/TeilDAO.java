@@ -6,7 +6,7 @@ import ch.hslu.dmg.library.collection.TeilCol;
 /**
  * Created by Dave on 09.05.2014.
  */
-public class TeilDAO extends BaseDao {
+public class TeilDao extends BaseDao {
 
 
     private  String sqlReadSubTeilCol = "SELECT Teil.TeilNr AS ID , \n"
@@ -21,7 +21,7 @@ public class TeilDAO extends BaseDao {
 
     private String sqlReadTeileByMaschineId = "";
 
-    public TeilDAO()
+    public TeilDao()
     {
         super();
     }
