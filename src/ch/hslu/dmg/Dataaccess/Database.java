@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class Database<T> {
 
     private String _connectionString;
-    private Connection _connection;
+    protected Connection _connection;
     private String _PropertyDelimiter = "\\.";
 
     public Database(String connectionString) {
@@ -27,7 +27,7 @@ public class Database<T> {
         try {
             String dbms = "sqlserver";
             String databaseServer = "localhost";
-            String databaseName = "DMG_Project";
+            String databaseName = "DMG_Project_Test";
             //String instanceName = "";
             String userName = "dmg";
             String password = "dmgdmg";
@@ -56,6 +56,15 @@ public class Database<T> {
         return true;
     }
 
+    public void ExecuteNonQuery(String sqlQuery) {
+        try {
+            CallableStatement statement = this._connection.prepareCall(sqlQuery);
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public T FillObject(T dataObject, String sqlCommand) {
         try {
             PreparedStatement statement = _connection.prepareStatement(sqlCommand);
@@ -74,22 +83,21 @@ public class Database<T> {
     }
 
 
-    public CollectionBase<T> FillList(CollectionBase<T> list, Class<T> elementType, String sqlQuery){
-        try{
+    public CollectionBase<T> FillList(CollectionBase<T> list, Class<T> elementType, String sqlQuery) {
+        try {
             PreparedStatement statement = _connection.prepareStatement(sqlQuery);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Object dataObject = elementType.newInstance();
                 this.recordToObject(resultSet, (T) dataObject);
                 list.add((T) dataObject);
             }
             resultSet.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
-
 
 
     private void recordToObject(final ResultSet resultSet, T dataObject) {
@@ -122,31 +130,28 @@ public class Database<T> {
 
                     Object newData = getMethod.invoke(data, null);
 
-                    if (newData == null && value != null)
-                    {
+                    if (newData == null && value != null) {
                         Type propertyType = getMethod.getReturnType();
                         //todo Überprüfen ob hier wirklich String ausgegeben wird falls diese klasse verwendet wird
-                        if (!propertyType.getClass().isPrimitive() && (!propertyType.getClass().getName().equals("String")) ) {
+                        if (!propertyType.getClass().isPrimitive() && (!propertyType.getClass().getName().equals("String"))) {
                             newData = ((Class) propertyType).newInstance();
                             Method setMethod = methodDictionary.get("set_" + fieldName);
                             setMethod.invoke(data, newData);
                         }
                     }
                     data = newData;
-                    if (data == null)
-                    {
+                    if (data == null) {
                         break;
                     }
                 }
-                if (data == null)
-                {
+                if (data == null) {
                     continue;
                 }
 
 
                 Method getMethod = null; //= data.getClass().getMethod("get_" + columnName[columnName.length - 1]);//methodDictionary.get("get_" + columnName);
-                for (Method method : data.getClass().getMethods()){
-                    if (method.getName().equals("get_" + columnName[columnName.length - 1])){
+                for (Method method : data.getClass().getMethods()) {
+                    if (method.getName().equals("get_" + columnName[columnName.length - 1])) {
                         getMethod = method;
                         break;
                     }
@@ -154,30 +159,24 @@ public class Database<T> {
                 Class<?> setProperty = getMethod.getReturnType();
                 //Field setProperty = data.getClass().getDeclaredField("_" + columnName);
 
-                if (setProperty != null){
+                if (setProperty != null) {
 
-                    Method [] methodsData = data.getClass().getMethods();
+                    Method[] methodsData = data.getClass().getMethods();
                     Method setMethod = null;
-                    for (Method method : methodsData){
-                        if (method.getName().equals("set_" + columnName[columnName.length - 1])){
+                    for (Method method : methodsData) {
+                        if (method.getName().equals("set_" + columnName[columnName.length - 1])) {
                             setMethod = method;
                             break;
                         }
                     }
                     //Method setMethod = data.getClass().getMethod("set_" + columnName);
-                    if (setMethod != null)
-                    {
+                    if (setMethod != null) {
                         fieldName = setMethod.getName();
-                        if (value == null)
-                        {
+                        if (value == null) {
                             setMethod.invoke(data, null);
-                        }
-                        else if (value != null && value.getClass() == setProperty)
-                        {
+                        } else if (value != null && value.getClass() == setProperty) {
                             setMethod.invoke(data, value);
-                        }
-                        else
-                        {
+                        } else {
                             setMethod.invoke(data, this.SetFormat(value, value.getClass(), setProperty));
                         }
                     }
@@ -194,33 +193,32 @@ public class Database<T> {
         }
     }
 
-    private Object SetFormat(Object value, Class sourceType, Class targetType){
-        if (sourceType == java.lang.Double.class && targetType == float.class){
-           return ((Double)value).floatValue();
+    private Object SetFormat(Object value, Class sourceType, Class targetType) {
+        if (sourceType == java.lang.Double.class && targetType == float.class) {
+            return ((Double) value).floatValue();
         }
         return (T) value;
     }
 
     /**
      * The Save method to save generic Objects.
+     *
      * @param dataObject The object which will be saved
-     * @param sqlQuery The query
-     * @param idColumn If the ID Column is not specified by ID
+     * @param sqlQuery   The query
+     * @param idColumn   If the ID Column is not specified by ID
      */
-    public final void save(final Object dataObject, final String sqlQuery, final String idColumn){
+    public final void save(final Object dataObject, final String sqlQuery, final String idColumn) {
         try {
             PreparedStatement statement = _connection.prepareStatement(sqlQuery);
             ResultSet rs = statement.executeQuery();
             String entityName = rs.getMetaData().getTableName(1);
             // If there is a next that means the Object which we want to save already exists
-            if (rs.next())
-            {
+            if (rs.next()) {
                 String insertQuery = "INSERT INTO %s (%s) VALUES (%s)";
                 ResultSetMetaData resultSetMetaData = rs.getMetaData();
                 int columnCount = resultSetMetaData.getColumnCount();
                 HashMap<String, T> columns = new HashMap<String, T>();
-                for (int ordinal = 1; ordinal <= columnCount; ordinal++)
-                {
+                for (int ordinal = 1; ordinal <= columnCount; ordinal++) {
                     String columnLabel = resultSetMetaData.getColumnLabel(ordinal);
                     String columnName = resultSetMetaData.getColumnName(ordinal);
 
@@ -234,14 +232,10 @@ public class Database<T> {
                 }
                 String allKeys = StringUtils.join(columns.keySet(), ", ");
                 ArrayList<String> allValuesString = new ArrayList<String>();
-                for (Object value : columns.values())
-                {
-                    if (value instanceof String)
-                    {
+                for (Object value : columns.values()) {
+                    if (value instanceof String) {
                         allValuesString.add(String.format("'%s'", value));
-                    }
-                    else
-                    {
+                    } else {
                         allValuesString.add(String.format("%s", value.toString()));
                     }
                 }
@@ -251,8 +245,7 @@ public class Database<T> {
                 preparedStatement.execute();
             }
             // Otherwise there is no Object so we can create an Insert Script
-            else
-            {
+            else {
                 String updateQuery = "Update %s SET %s WHERE %s = %d";
             }
 
@@ -271,10 +264,10 @@ public class Database<T> {
         Class<?> type = Object.class;
     }
 
-    private Method getMethod(String methodName, Object dataObject){
+    private Method getMethod(String methodName, Object dataObject) {
         Method[] methods = dataObject.getClass().getMethods();
-        for (Method method : methods){
-            if(method.getName().equals(methodName)){
+        for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
                 return method;
             }
         }

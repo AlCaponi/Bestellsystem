@@ -3,7 +3,7 @@ package ch.hslu.dmg.library;
 /**
  * @author Angelo on 06.05.2014.
  */
-public class Kunde extends ObjectBase{
+public class Kunde extends ObjectBase {
     private Person _Person;
 
     public Person get_Person() {
@@ -14,8 +14,8 @@ public class Kunde extends ObjectBase{
         this._Person = _Person;
     }
 
-    @Override public String toString()
-    {
+    @Override
+    public String toString() {
         return _Person.get_Name();
     }
 }

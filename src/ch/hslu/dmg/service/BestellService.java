@@ -70,7 +70,7 @@ public class BestellService {
         return verfuegbareMaschinen;
     }
 
-    public void SaveFertigungsschritt(Fertigungsschritt fertigungsschritt) {
-        fertigungsschrittDao.Save(fertigungsschritt);
+    public void SaveFertigungsschritt(Fertigungsschritt fertigungsschritt, int bestellNr) {
+        fertigungsschrittDao.Save(fertigungsschritt, bestellNr);
     }
 }

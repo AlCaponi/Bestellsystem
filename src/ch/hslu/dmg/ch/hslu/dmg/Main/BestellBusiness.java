@@ -1,5 +1,6 @@
 package ch.hslu.dmg.ch.hslu.dmg.Main;
 
+import ch.hslu.dmg.library.Fertigungsschritt;
 import ch.hslu.dmg.library.Maschine;
 import ch.hslu.dmg.library.Teil;
 import ch.hslu.dmg.library.collection.KundeCol;
@@ -73,6 +74,10 @@ public class BestellBusiness {
             }
         }
         return fertigungsTeile;
+    }
+
+    public void saveFertigungsschritt(Fertigungsschritt fertigungsschritt, int bestellNr){
+        _bestellService.SaveFertigungsschritt(fertigungsschritt, bestellNr);
     }
 
 

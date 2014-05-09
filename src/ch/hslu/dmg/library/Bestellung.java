@@ -6,7 +6,6 @@ package ch.hslu.dmg.library;
 public class Bestellung extends ObjectBase {
     private int _Anzahl;
     private Teil _Teil;
-    private Fertigungsplan _Feritungsplan;
     private Kunde _Kunde;
 
     public int get_Anzahl() {
@@ -23,14 +22,6 @@ public class Bestellung extends ObjectBase {
 
     public void set_Teil(Teil _Teil) {
         this._Teil = _Teil;
-    }
-
-    public Fertigungsplan get_Feritungsplan() {
-        return _Feritungsplan;
-    }
-
-    public void set_Feritungsplan(Fertigungsplan _Feritungsplan) {
-        this._Feritungsplan = _Feritungsplan;
     }
 
     public Kunde get_Kunde() {
