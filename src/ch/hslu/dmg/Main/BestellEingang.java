@@ -1,4 +1,4 @@
-package ch.hslu.dmg.ch.hslu.dmg.Main;
+package ch.hslu.dmg.Main;
 
 import ch.hslu.dmg.library.Kunde;
 

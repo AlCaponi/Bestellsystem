@@ -1,4 +1,4 @@
-package ch.hslu.dmg.ch.hslu.dmg.Main;
+package ch.hslu.dmg.Main;
 
 /**
  * Created by Dave on 08.05.2014.
