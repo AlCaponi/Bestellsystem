@@ -178,7 +178,7 @@ public class Database<T> {
                         }
                         else
                         {
-                            setMethod.invoke(data, value);
+                            setMethod.invoke(data, this.SetFormat(value, value.getClass(), setProperty));
                         }
                     }
                 }
@@ -192,6 +192,13 @@ public class Database<T> {
         } catch (InstantiationException e) {
             e.printStackTrace();
         }
+    }
+
+    private Object SetFormat(Object value, Class sourceType, Class targetType){
+        if (sourceType == java.lang.Double.class && targetType == float.class){
+           return ((Double)value).floatValue();
+        }
+        return (T) value;
     }
 
     /**

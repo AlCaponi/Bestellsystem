@@ -41,4 +41,9 @@ public class Teil extends ObjectBase {
     public void set_IsFertigungsteil(Boolean _IsFertigungsteil) {
         this._IsFertigungsteil = _IsFertigungsteil;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s", this.get_Bezeichnung());
+    }
 }

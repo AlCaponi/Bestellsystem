@@ -15,7 +15,7 @@ public class TeilDAO extends BaseDao {
 
     String sqlReadTeile  = "SELECT  TeilNr AS [ID]\n"
             + "      ,Bezeichnung       AS [Bezeichnung]\n"
-            + "      ,Grösse    AS [Grösse]\n"
+            + "      ,Grösse    AS [Groesse]\n"
             + "      ,Preis    AS [Preis]\n"
             + "      ,IsFertigungsteil    AS [IsFertigungsteil]\n"
             + "  FROM [dbo].[Teil]";
