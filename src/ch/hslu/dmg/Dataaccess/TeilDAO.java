@@ -45,7 +45,7 @@ public class TeilDao extends BaseDao {
             + "                UnterteilNr , \n"
             + "                1\n"
             + "           FROM Teil_besteht_aus\n"
-            + "           WHERE TeilNr = 5d\n"
+            + "           WHERE TeilNr = %d\n"
             + "         UNION ALL\n"
             + "         SELECT t.TeilNr , \n"
             + "                t.Anzahl , \n"
@@ -55,11 +55,11 @@ public class TeilDao extends BaseDao {
             + "                Teil_besteht_aus t INNER JOIN cte c\n"
             + "                                   ON c.UnterTeilNr = t.TeilNr\n"
             + "       )\n"
-            + "    SELECT ct.UnterTeilNr AS TeilNr , \n"
-            + "           Teil.Bezeichnung , \n"
-            + "           Teil.Grösse AS [Teil.Groesse] , \n"
-            + "           Teil.IsFertigungsteil , \n"
-            + "           Teil.Preis , \n"
+            + "    SELECT ct.UnterTeilNr AS ID , \n"
+            + "           Bezeichnung , \n"
+            + "           Grösse AS [Groesse] , \n"
+            + "           IsFertigungsteil , \n"
+            + "           Preis , \n"
             + "           ct.TreeLevel + 1 AS TreeLevel\n"
             + "      FROM\n"
             + "           cte ct CROSS JOIN dbo.Tally ta INNER JOIN Teil\n"
@@ -68,7 +68,7 @@ public class TeilDao extends BaseDao {
             + "                                                       SELECT ct2.TeilNr\n"
             + "                                                         FROM cte ct2\n"
             + "                                                     )\n"
-            + "      ORDER BY TreeLevel , TeilNr;";
+            + "      ORDER BY TreeLevel , ID;";
 
     public final TeilCol readTeil ()
     {

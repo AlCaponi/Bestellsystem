@@ -1,9 +1,11 @@
 package ch.hslu.dmg.Main;
 
 import ch.hslu.dmg.library.Kunde;
+import ch.hslu.dmg.library.Teil;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
+import java.util.Date;
 
 /**
  * Created by Dave on 08.05.2014.
@@ -102,8 +104,10 @@ public class BestellEingang extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-        Liefertermin l = new Liefertermin(this,true);
+        Date date = BestellBusiness.getInstance().bestellen((Teil)jComboBoxTeil.getSelectedItem(),Integer.parseInt(jTextField1.getText()), (Kunde)jComboBoxKunde.getSelectedItem());
+        Liefertermin l = new Liefertermin(this,true,date);
         l.setVisible(true);// TODO add your handling code here:
+
     }
 
     /**
