@@ -56,7 +56,7 @@ public class BestellBusiness {
 
         //Ist es ein Fertigungsteil?
         if (bestellTeil.get_IsFertigungsteil()) {
-            // TODO: Collection mit mehrfachnennung von Teilen (Anzahl) lesen
+            // Collection mit mehrfachnennung von Teilen (Anzahl) und TreeLevel lesen
             TeilCol alleTeile = _bestellService.GetSubTeilWithLevel(bestellTeil.get_ID());
             HashMap<Integer, TeilCol> tree = new HashMap<Integer, TeilCol>();
             TeilCol tc = new TeilCol();
@@ -85,14 +85,17 @@ public class BestellBusiness {
                     shippingDate=calendar.getTime();
 
                     // TODO: verfügbare mitarbeiter von shippingdate lesen
-                    // MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter(shippingdate);
-                    MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter();
+                    MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter(shippingDate);
+                    //MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter();
                     // TODO: verfügbare Maschinen von shippingdate lesen
-                    // MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen(shippingdate);
-                    MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen();
-                    int arbeitstage = alleTeile.size();
-                    int mitarbeiter = verfuegbareMitarbeiter.size();
-                    int maschineCount = 0;
+                     MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen(shippingDate);
+                    //MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen();
+                    //int arbeitstage = alleTeile.size();
+                    //int mitarbeiter = verfuegbareMitarbeiter.size();
+                    //int maschineCount = 0;
+                    if(maschineCol.size()==0 || verfuegbareMitarbeiter.size()==0){
+                        continue;
+                    }
                     for (Maschine maschine : maschineCol) {
                         for (Teil fertigungsTeil : prodUnterTeilAll) {
                             for (Teil teil : maschine.get_produzierteTeile()) {
