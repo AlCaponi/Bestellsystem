@@ -63,18 +63,21 @@ public class BestellService {
         return teilDao.readSubtTeile(fertigungsTeilID);
     }
 
-
+<<<<<<< HEAD
     public TeilCol GetSubTeilWithLevel(int fertigungsTeilID) {
         return teilDao.readSubTeileWithLevel(fertigungsTeilID);
     }
 
+    public MitarbeiterCol GetAllVerfuegbareMitarbeiter() {
+        return mitarbeiterDao.readVerfuegbareMitarbeiter();
+=======
     public MitarbeiterCol GetAllVerfuegbareMitarbeiter(Date date) {
         return mitarbeiterDao.readVerfuegbareMitarbeiter(date);
+>>>>>>> 84a0f4083141ed2b51d33255f4281985d0fdeede
     }
 
-
-    public MaschineCol GetAllVerfuegbareMaschinen() {
-        MaschineCol verfuegbareMaschinen = maschineDao.readVerfuegbareMaschinen();
+    public MaschineCol GetAllVerfuegbareMaschinen(Date verfuegbarkeitsDatum) {
+        MaschineCol verfuegbareMaschinen = maschineDao.readVerfuegbareMaschinen(verfuegbarkeitsDatum);
         for (Maschine maschine : verfuegbareMaschinen) {
             maschine.set_produzierteTeile(teilDao.readTeileByMaschineID(maschine.get_ID()));
         }
