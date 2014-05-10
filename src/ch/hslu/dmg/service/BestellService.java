@@ -67,8 +67,6 @@ public class BestellService {
         return teilDao.readSubTeileWithLevel(fertigungsTeilID);
     }
 
-    public MitarbeiterCol GetAllVerfuegbareMitarbeiter() {
-        return mitarbeiterDao.readVerfuegbareMitarbeiter();
     public MitarbeiterCol GetAllVerfuegbareMitarbeiter(Date date) {
         return mitarbeiterDao.readVerfuegbareMitarbeiter(date);
     }

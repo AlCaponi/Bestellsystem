@@ -86,10 +86,10 @@ public class BestellBusiness {
 
                     // TODO: verfügbare mitarbeiter von shippingdate lesen
                     // MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter(shippingdate);
-                    MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter();
+                    MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter(new Date());
                     // TODO: verfügbare Maschinen von shippingdate lesen
                     // MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen(shippingdate);
-                    MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen();
+                    MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen(new Date());
                     int arbeitstage = alleTeile.size();
                     int mitarbeiter = verfuegbareMitarbeiter.size();
                     int maschineCount = 0;
