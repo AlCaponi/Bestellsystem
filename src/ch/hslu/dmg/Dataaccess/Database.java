@@ -3,6 +3,7 @@ package ch.hslu.dmg.Dataaccess;
 import ch.hslu.dmg.library.CollectionBase;
 import com.sun.deploy.util.StringUtils;
 
+import javax.swing.plaf.nimbus.State;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -56,13 +57,19 @@ public class Database<T> {
         return true;
     }
 
-    public void ExecuteNonQuery(String sqlQuery) {
+    public int ExecuteNonQuery(String sqlQuery) {
+        int generatedId = 0;
         try {
-            CallableStatement statement = this._connection.prepareCall(sqlQuery);
+            PreparedStatement statement = this._connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
             statement.execute();
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                generatedId = generatedKeys.getInt(1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return generatedId;
     }
 
     public T FillObject(T dataObject, String sqlCommand) {
