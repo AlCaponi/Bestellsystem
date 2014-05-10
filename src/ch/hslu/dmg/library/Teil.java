@@ -8,6 +8,7 @@ public class Teil extends ObjectBase {
     private float _Groesse;
     private float _Preis;
     private Boolean _IsFertigungsteil;
+    private int _TreeLevel;
 
 
     public String get_Bezeichnung() {
@@ -41,6 +42,8 @@ public class Teil extends ObjectBase {
     public void set_IsFertigungsteil(Boolean _IsFertigungsteil) {
         this._IsFertigungsteil = _IsFertigungsteil;
     }
+
+    public int get_TreeLevel(){return _TreeLevel;}
 
     @Override
     public String toString() {
