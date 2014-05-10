@@ -45,6 +45,10 @@ public class Teil extends ObjectBase {
 
     public int get_TreeLevel(){return _TreeLevel;}
 
+    public Teil (){
+
+    }
+
     @Override
     public String toString() {
         return String.format("%s", this.get_Bezeichnung());

@@ -45,7 +45,7 @@ public class TeilDao extends BaseDao {
             + "                UnterteilNr , \n"
             + "                1\n"
             + "           FROM Teil_besteht_aus\n"
-            + "           WHERE TeilNr = 5d\n"
+            + "           WHERE TeilNr = %d\n"
             + "         UNION ALL\n"
             + "         SELECT t.TeilNr , \n"
             + "                t.Anzahl , \n"
