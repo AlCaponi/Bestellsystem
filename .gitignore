@@ -4,3 +4,4 @@
 out/production/Bestellsystem/ch/hslu/dmg/Dataaccess/AdresseDAO.class
 *.class
 *.class
+.out/*
