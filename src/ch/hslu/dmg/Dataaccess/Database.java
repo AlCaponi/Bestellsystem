@@ -163,28 +163,30 @@ public class Database<T> {
                         break;
                     }
                 }
-                Class<?> setProperty = getMethod.getReturnType();
-                //Field setProperty = data.getClass().getDeclaredField("_" + columnName);
+                if(getMethod!=null) {
+                    Class<?> setProperty = getMethod.getReturnType();
+                    //Field setProperty = data.getClass().getDeclaredField("_" + columnName);
 
-                if (setProperty != null) {
+                    if (setProperty != null) {
 
-                    Method[] methodsData = data.getClass().getMethods();
-                    Method setMethod = null;
-                    for (Method method : methodsData) {
-                        if (method.getName().equals("set_" + columnName[columnName.length - 1])) {
-                            setMethod = method;
-                            break;
+                        Method[] methodsData = data.getClass().getMethods();
+                        Method setMethod = null;
+                        for (Method method : methodsData) {
+                            if (method.getName().equals("set_" + columnName[columnName.length - 1])) {
+                                setMethod = method;
+                                break;
+                            }
                         }
-                    }
-                    //Method setMethod = data.getClass().getMethod("set_" + columnName);
-                    if (setMethod != null) {
-                        fieldName = setMethod.getName();
-                        if (value == null) {
-                            setMethod.invoke(data, null);
-                        } else if (value != null && value.getClass() == setProperty) {
-                            setMethod.invoke(data, value);
-                        } else {
-                            setMethod.invoke(data, this.SetFormat(value, value.getClass(), setProperty));
+                        //Method setMethod = data.getClass().getMethod("set_" + columnName);
+                        if (setMethod != null) {
+                            fieldName = setMethod.getName();
+                            if (value == null) {
+                                setMethod.invoke(data, null);
+                            } else if (value != null && value.getClass() == setProperty) {
+                                setMethod.invoke(data, value);
+                            } else {
+                                setMethod.invoke(data, this.SetFormat(value, value.getClass(), setProperty));
+                            }
                         }
                     }
                 }

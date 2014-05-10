@@ -1,5 +1,7 @@
 package ch.hslu.dmg.Main;
 
+import java.util.Date;
+
 /**
  * Created by Dave on 08.05.2014.
  */
@@ -8,9 +10,10 @@ public class Liefertermin extends javax.swing.JDialog {
     /**
      * Creates new form Liefertermin
      */
-    public Liefertermin(java.awt.Frame parent, boolean modal) {
+    public Liefertermin(java.awt.Frame parent, boolean modal,Date date) {
         super(parent, modal);
         initComponents();
+        jTextArea1.setText(String.format("Ihr(e) Teil(e) wird/werden am %s geliefert.",date));
     }
 
     /**
@@ -36,7 +39,7 @@ public class Liefertermin extends javax.swing.JDialog {
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Ihr(e) Teil(e) wird/werden in 5 Tagen geliefert.");
+
         jTextArea1.setEditable(false);
         jScrollPane1.setViewportView(jTextArea1);
 
@@ -92,20 +95,6 @@ public class Liefertermin extends javax.swing.JDialog {
             java.util.logging.Logger.getLogger(Liefertermin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                Liefertermin dialog = new Liefertermin(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify
