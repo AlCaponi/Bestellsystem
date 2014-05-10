@@ -6,6 +6,8 @@ import ch.hslu.dmg.library.Fertigungsschritt;
 import ch.hslu.dmg.library.Maschine;
 import ch.hslu.dmg.library.collection.*;
 
+import java.util.Date;
+
 /**
  * @author Angelo on 08.05.2014.
  */
@@ -61,12 +63,17 @@ public class BestellService {
         return teilDao.readSubtTeile(fertigungsTeilID);
     }
 
+<<<<<<< HEAD
     public TeilCol GetSubTeilWithLevel(int fertigungsTeilID) {
         return teilDao.readSubTeileWithLevel(fertigungsTeilID);
     }
 
     public MitarbeiterCol GetAllVerfuegbareMitarbeiter() {
         return mitarbeiterDao.readVerfuegbareMitarbeiter();
+=======
+    public MitarbeiterCol GetAllVerfuegbareMitarbeiter(Date date) {
+        return mitarbeiterDao.readVerfuegbareMitarbeiter(date);
+>>>>>>> 84a0f4083141ed2b51d33255f4281985d0fdeede
     }
 
     public MaschineCol GetAllVerfuegbareMaschinen() {
