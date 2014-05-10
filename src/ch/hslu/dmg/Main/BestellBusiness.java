@@ -46,8 +46,8 @@ public class BestellBusiness {
         //Ist es ein Fertigungsteil?
         if (bestellTeil.get_IsFertigungsteil()) {
             TeilCol alleTeile = getAllFertigungsTeile(bestellTeil);
-            MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter();
-            MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen();
+            MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter(new Date());
+            MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen(new Date());
             int arbeitstage = alleTeile.size();
             int mitarbeiter = verfuegbareMitarbeiter.size();
             int maschineCount = 0;

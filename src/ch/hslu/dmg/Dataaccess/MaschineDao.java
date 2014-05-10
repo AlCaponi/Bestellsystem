@@ -3,6 +3,8 @@ package ch.hslu.dmg.Dataaccess;
 import ch.hslu.dmg.library.Maschine;
 import ch.hslu.dmg.library.collection.MaschineCol;
 
+import java.util.Date;
+
 /**
  * @author Angelo on 09.05.2014.
  */
@@ -16,8 +18,7 @@ public class MaschineDao extends BaseDao {
             + "  WHERE Maschine.MaschineID NOT IN( \n"
             + "                                    SELECT MaschineID\n"
             + "                                      FROM DMG_Project.dbo.Fertigungsschritt\n"
-            + "                                      WHERE datum > GETDATE(\n"
-            + "                                                           )\n"
+            + "                                      WHERE datum > '%s'\n"
             + "                                  );";
 
     public MaschineDao() {
@@ -25,7 +26,8 @@ public class MaschineDao extends BaseDao {
     }
 
 
-    public MaschineCol readVerfuegbareMaschinen() {
-        return (MaschineCol) Database.FillList(new MaschineCol(), Maschine.class, _SqlReadVerfuegbareMaschinen);
+    public MaschineCol readVerfuegbareMaschinen(Date date) {
+        String dateString = String.format("%d.%d.2014", date.getDate(), date.getMonth()+1);
+        return (MaschineCol) Database.FillList(new MaschineCol(), Maschine.class, String.format(_SqlReadVerfuegbareMaschinen, dateString));
     }
 }

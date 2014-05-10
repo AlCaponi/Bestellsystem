@@ -67,8 +67,8 @@ public class BestellService {
         return mitarbeiterDao.readVerfuegbareMitarbeiter(date);
     }
 
-    public MaschineCol GetAllVerfuegbareMaschinen() {
-        MaschineCol verfuegbareMaschinen = maschineDao.readVerfuegbareMaschinen();
+    public MaschineCol GetAllVerfuegbareMaschinen(Date verfuegbarkeitsDatum) {
+        MaschineCol verfuegbareMaschinen = maschineDao.readVerfuegbareMaschinen(verfuegbarkeitsDatum);
         for (Maschine maschine : verfuegbareMaschinen) {
             maschine.set_produzierteTeile(teilDao.readTeileByMaschineID(maschine.get_ID()));
         }
