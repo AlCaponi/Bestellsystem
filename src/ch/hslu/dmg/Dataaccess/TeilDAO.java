@@ -34,6 +34,41 @@ public class TeilDao extends BaseDao {
             + "      ,IsFertigungsteil    AS [IsFertigungsteil]\n"
             + "  FROM [dbo].[Teil]";
 
+    private String sqlReadSubTeileWithLevel = "\n"
+            + "WITH cte( TeilNr , \n"
+            + "          Anzahl , \n"
+            + "          UnterTeilNr , \n"
+            + "          TreeLevel\n"
+            + "        )\n"
+            + "    AS ( SELECT TeilNr , \n"
+            + "                Anzahl , \n"
+            + "                UnterteilNr , \n"
+            + "                1\n"
+            + "           FROM Teil_besteht_aus\n"
+            + "           WHERE TeilNr = 5d\n"
+            + "         UNION ALL\n"
+            + "         SELECT t.TeilNr , \n"
+            + "                t.Anzahl , \n"
+            + "                t.UnterteilNr , \n"
+            + "                c.TreeLevel + 1\n"
+            + "           FROM\n"
+            + "                Teil_besteht_aus t INNER JOIN cte c\n"
+            + "                                   ON c.UnterTeilNr = t.TeilNr\n"
+            + "       )\n"
+            + "    SELECT ct.UnterTeilNr AS TeilNr , \n"
+            + "           Teil.Bezeichnung , \n"
+            + "           Teil.Grösse AS [Teil.Groesse] , \n"
+            + "           Teil.IsFertigungsteil , \n"
+            + "           Teil.Preis , \n"
+            + "           ct.TreeLevel + 1 AS TreeLevel\n"
+            + "      FROM\n"
+            + "           cte ct CROSS JOIN dbo.Tally ta INNER JOIN Teil\n"
+            + "                                          ON Teil.TeilNr = ct.UnterTeilNr\n"
+            + "      WHERE ta.Num <= ct.Anzahl AND ct.UnterTeilNr IN( \n"
+            + "                                                       SELECT ct2.TeilNr\n"
+            + "                                                         FROM cte ct2\n"
+            + "                                                     )\n"
+            + "      ORDER BY TreeLevel , TeilNr;";
 
     public final TeilCol readTeil ()
     {
@@ -46,5 +81,9 @@ public class TeilDao extends BaseDao {
 
     public TeilCol readTeileByMaschineID(int maschine_ID) {
         return (TeilCol)Database.FillList(new TeilCol(), Teil.class, String.format(sqlReadTeileByMaschineId, maschine_ID));
+    }
+
+    public TeilCol readSubTeileWithLevel(int fertigungsTeilID){
+        return (TeilCol)Database.FillList(new TeilCol(),Teil.class, String.format(sqlReadSubTeileWithLevel, fertigungsTeilID));
     }
 }
