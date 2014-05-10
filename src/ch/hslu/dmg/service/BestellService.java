@@ -63,14 +63,12 @@ public class BestellService {
         return teilDao.readSubtTeile(fertigungsTeilID);
     }
 
-
     public TeilCol GetSubTeilWithLevel(int fertigungsTeilID) {
         return teilDao.readSubTeileWithLevel(fertigungsTeilID);
     }
 
     public MitarbeiterCol GetAllVerfuegbareMitarbeiter(Date date) {
         return mitarbeiterDao.readVerfuegbareMitarbeiter(date);
-
     }
 
     public MaschineCol GetAllVerfuegbareMaschinen(Date verfuegbarkeitsDatum) {
