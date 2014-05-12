@@ -49,6 +49,10 @@ public class Teil extends ObjectBase implements Serializable {
 
     public void set_TreeLevel(int treeLevel){ _TreeLevel = treeLevel;}
 
+    public Teil (){
+
+    }
+
     @Override
     public String toString() {
         return String.format("%s", this.get_Bezeichnung());
