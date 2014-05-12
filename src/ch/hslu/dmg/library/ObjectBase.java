@@ -1,9 +1,11 @@
 package ch.hslu.dmg.library;
 
+import java.io.Serializable;
+
 /**
  * @author Angelo on 06.05.2014.
  */
-public class ObjectBase {
+public class ObjectBase implements Serializable {
     private int _ID;
 
     public ObjectBase() {

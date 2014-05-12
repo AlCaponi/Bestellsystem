@@ -1,9 +1,11 @@
 package ch.hslu.dmg.library;
 
+import java.io.Serializable;
+
 /**
  * @author Angelo on 06.05.2014.
  */
-public class Teil extends ObjectBase {
+public class Teil extends ObjectBase implements Serializable {
     private String _Bezeichnung;
     private float _Groesse;
     private float _Preis;
@@ -44,6 +46,8 @@ public class Teil extends ObjectBase {
     }
 
     public int get_TreeLevel(){return _TreeLevel;}
+
+    public void set_TreeLevel(int treeLevel){ _TreeLevel = treeLevel;}
 
     @Override
     public String toString() {

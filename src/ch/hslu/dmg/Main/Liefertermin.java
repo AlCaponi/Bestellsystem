@@ -34,8 +34,19 @@ public class Liefertermin extends javax.swing.JDialog {
         setResizable(false);
 
         jButton1.setText("OK");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
 
         jButton2.setText("Abbrechen");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -96,6 +107,13 @@ public class Liefertermin extends javax.swing.JDialog {
         }
         //</editor-fold>
     }
+
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+        this.dispose();
+
+    }
+
 
     // Variables declaration - do not modify
     private javax.swing.JButton jButton1;

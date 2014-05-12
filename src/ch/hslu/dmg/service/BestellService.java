@@ -3,6 +3,7 @@ package ch.hslu.dmg.service;
 import ch.hslu.dmg.Dataaccess.*;
 import ch.hslu.dmg.library.Bestellung;
 import ch.hslu.dmg.library.Fertigungsschritt;
+import ch.hslu.dmg.library.Fertigungsteil;
 import ch.hslu.dmg.library.Maschine;
 import ch.hslu.dmg.library.collection.*;
 
@@ -19,6 +20,7 @@ public class BestellService {
     private MaschineDao maschineDao;
     private FertigungsschrittDao fertigungsschrittDao;
     private BestellungDao bestellungDao;
+    private FertigungsteilDao fertigungsteilDao;
 
 
     public BestellService() {
@@ -29,6 +31,7 @@ public class BestellService {
         maschineDao = new MaschineDao();
         fertigungsschrittDao = new FertigungsschrittDao();
         bestellungDao = new BestellungDao();
+        fertigungsteilDao = new FertigungsteilDao();
     }
 
     public PersonCol GetAllPersonen() {
@@ -46,6 +49,8 @@ public class BestellService {
     public FertigungsteilCol GetAllFertigungsteil() {
         return new FertigungsteilCol();
     }
+
+    public FertigungsteilCol GetFertigungsteilByTeilID(int teilID){return fertigungsteilDao.readVerfuegbareMitarbeiter(teilID);}
 
     public FertigungsschrittCol GetAllFertigungsschritt() {
         return new FertigungsschrittCol();

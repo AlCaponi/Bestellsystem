@@ -19,7 +19,11 @@ public class TeilDao extends BaseDao {
             + "    ON Teil_besteht_aus.UnterteilNr = Teil.TeilNr\n"
             + "WHERE Teil_besteht_aus.TeilNr = %d";
 
-    private String sqlReadTeileByMaschineId = "";
+    private String sqlReadTeileByMaschineId = "Select Teil.TeilNr AS ID\n"
+            + "FROM [dbo].[Teil]\n"
+            + " INNER JOIN [dbo].[Fertigungsteil] \n"
+            + " ON Fertigungsteil.TeilNr = Teil.TeilNr"
+            + " WHERE Fertigungsteil.MaschineID = %d";
 
     public TeilDao()
     {

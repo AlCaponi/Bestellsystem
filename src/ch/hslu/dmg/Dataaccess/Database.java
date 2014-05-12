@@ -102,6 +102,7 @@ public class Database<T> {
             resultSet.close();
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sqlQuery);
         }
         return list;
     }

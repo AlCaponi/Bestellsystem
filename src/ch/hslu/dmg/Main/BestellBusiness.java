@@ -8,6 +8,7 @@ import ch.hslu.dmg.library.collection.TeilCol;
 import ch.hslu.dmg.service.BestellService;
 
 import javax.swing.*;
+import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,69 +57,77 @@ public class BestellBusiness {
 
         //Ist es ein Fertigungsteil?
         if (bestellTeil.get_IsFertigungsteil()) {
-            // Collection mit mehrfachnennung von Teilen (Anzahl) und TreeLevel lesen
-            TeilCol alleTeile = _bestellService.GetSubTeilWithLevel(bestellTeil.get_ID());
-            HashMap<Integer, TeilCol> tree = new HashMap<Integer, TeilCol>();
-            TeilCol tc = new TeilCol();
-            tc.add(bestellTeil);
-            tree.put(1,tc);
+            for (int i = 1; i <= anzahl; i++) {
+                // Collection mit mehrfachnennung von Teilen (Anzahl) und TreeLevel lesen
+                TeilCol alleTeile = _bestellService.GetSubTeilWithLevel(bestellTeil.get_ID());
+                HashMap<Integer, TeilCol> tree = new HashMap<Integer, TeilCol>();
+                TeilCol tc = new TeilCol();
+                tc.add(bestellTeil);
+                tree.put(1, tc);
 
-            for(Teil unterteil : alleTeile)
-            {
-                if(!tree.containsKey(unterteil.get_TreeLevel())){
-                    tree.put(unterteil.get_TreeLevel(),new TeilCol());
+                for (Teil unterteil : alleTeile) {
+                    if (!tree.containsKey(unterteil.get_TreeLevel())) {
+                        tree.put(unterteil.get_TreeLevel(), new TeilCol());
+                    }
+
+                    tree.get(unterteil.get_TreeLevel()).add(unterteil);
                 }
 
-                tree.get(unterteil.get_TreeLevel()).add(unterteil);
-            }
+
+                for (int d = tree.size(); d >= 1; d--) {
+
+                    TeilCol prodUnterTeilAll = getTeilColDeepCopy(tree.get(i));
+                    TeilCol prodUnterTeilPending = getTeilColDeepCopy(tree.get(i));
 
 
-            for(int i =tree.size();i<=1;i--) {
-                TeilCol prodUnterTeilAll = tree.get(i);
-                TeilCol prodUnterTeilPending = tree.get(i);
+                    while (prodUnterTeilPending.size() != 0) {
+                        prodUnterTeilAll.clear();
+                        prodUnterTeilAll.addAll(prodUnterTeilPending);
 
-                while(prodUnterTeilPending.size()!=0) {
-                    prodUnterTeilAll.clear();
-                    prodUnterTeilAll.addAll(prodUnterTeilPending);
-                    
-                    calendar.add(Calendar.DATE,1);
-                    shippingDate=calendar.getTime();
+                        calendar.add(Calendar.DATE, 1);
+                        shippingDate = calendar.getTime();
 
-                    // TODO: verfügbare mitarbeiter von shippingdate lesen
-                    MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter(shippingDate);
-                    //MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter();
-                    // TODO: verfügbare Maschinen von shippingdate lesen
-                     MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen(shippingDate);
-                    //MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen();
-                    //int arbeitstage = alleTeile.size();
-                    //int mitarbeiter = verfuegbareMitarbeiter.size();
-                    //int maschineCount = 0;
-                    if(maschineCol.size()==0 || verfuegbareMitarbeiter.size()==0){
-                        continue;
-                    }
-                    for (Maschine maschine : maschineCol) {
-                        for (Teil fertigungsTeil : prodUnterTeilAll) {
-                            for (Teil teil : maschine.get_produzierteTeile()) {
-                                if (teil.get_ID() == fertigungsTeil.get_ID() && verfuegbareMitarbeiter.size() > 0) {
-                                    // write Fertigungsschritt
-                                    Fertigungsschritt fertigungsschritt = new Fertigungsschritt();
-                                    fertigungsschritt.set_datum(shippingDate);
-                                    Fertigungsteil fertigungsteil = new Fertigungsteil();
-                                    fertigungsteil.set_Teil(fertigungsTeil);
-                                    fertigungsschritt.set_Fertigungsteil(fertigungsteil);
-                                    fertigungsschritt.set_Maschine(maschine);
-                                    fertigungsschritt.set_Mitarbeiter(verfuegbareMitarbeiter.get(verfuegbareMitarbeiter.size() - 1));
-                                    verfuegbareMitarbeiter.remove(verfuegbareMitarbeiter.size() - 1);
-                                    _bestellService.SaveFertigungsschritt(fertigungsschritt, bestellNummer);
-                                    prodUnterTeilPending.remove(fertigungsTeil);
-
+                        // TODO: verfügbare mitarbeiter von shippingdate lesen
+                        MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter(shippingDate);
+                        //MitarbeiterCol verfuegbareMitarbeiter = _bestellService.GetAllVerfuegbareMitarbeiter();
+                        // TODO: verfügbare Maschinen von shippingdate lesen
+                        MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen(shippingDate);
+                        //MaschineCol maschineCol = _bestellService.GetAllVerfuegbareMaschinen();
+                        //int arbeitstage = alleTeile.size();
+                        //int mitarbeiter = verfuegbareMitarbeiter.size();
+                        //int maschineCount = 0;
+                        if (maschineCol.size() == 0 || verfuegbareMitarbeiter.size() == 0) {
+                            continue;
+                        }
+                        for (Maschine maschine : maschineCol) {
+                            OUTERMOST:
+                            for (Teil fertigungsTeil : prodUnterTeilAll) {
+                                for (Teil teil : maschine.get_produzierteTeile()) {
+                                    if (teil.get_ID() == fertigungsTeil.get_ID() && verfuegbareMitarbeiter.size() > 0) {
+                                        // write Fertigungsschritt
+                                        Fertigungsschritt fertigungsschritt = new Fertigungsschritt();
+                                        fertigungsschritt.set_datum(shippingDate);
+                                        Fertigungsteil fertigungsteil = new Fertigungsteil();
+                                        fertigungsteil.set_Teil(fertigungsTeil);
+                                        Fertigungsteil fTeil = _bestellService.GetFertigungsteilByTeilID(fertigungsTeil.get_ID()).get(0);
+                                        fertigungsteil.set_Maschine(fTeil.get_Maschine());
+                                        fertigungsteil.set_ID(fTeil.get_ID());
+                                        fertigungsschritt.set_Fertigungsteil(fertigungsteil);
+                                        fertigungsschritt.set_Maschine(maschine);
+                                        fertigungsschritt.set_Mitarbeiter(verfuegbareMitarbeiter.get(verfuegbareMitarbeiter.size() - 1));
+                                        verfuegbareMitarbeiter.remove(verfuegbareMitarbeiter.size() - 1);
+                                        _bestellService.SaveFertigungsschritt(fertigungsschritt, bestellNummer);
+                                        prodUnterTeilPending.remove(fertigungsTeil);
+                                        break OUTERMOST;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            }
 
+                }
+
+            }
         }
         calendar.add(Calendar.DATE,1);
         shippingDate=calendar.getTime();
@@ -145,5 +154,29 @@ public class BestellBusiness {
         _bestellService.SaveFertigungsschritt(fertigungsschritt, bestellNr);
     }
 
+    private TeilCol getTeilColDeepCopy(TeilCol object)
+    {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(object);
+            oos.flush();
+            oos.close();
+            bos.close();
+            byte[] byteData = bos.toByteArray();
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+            TeilCol teilCol = (TeilCol) new ObjectInputStream(bais).readObject();
+
+        return teilCol;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
