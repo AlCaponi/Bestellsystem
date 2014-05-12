@@ -57,7 +57,7 @@ public class BestellBusiness {
 
         //Ist es ein Fertigungsteil?
         if (bestellTeil.get_IsFertigungsteil()) {
-            for (int i = 1; i <= anzahl; i++) {
+            for (int d = 1; d <= anzahl; d++) {
                 // Collection mit mehrfachnennung von Teilen (Anzahl) und TreeLevel lesen
                 TeilCol alleTeile = _bestellService.GetSubTeilWithLevel(bestellTeil.get_ID());
                 HashMap<Integer, TeilCol> tree = new HashMap<Integer, TeilCol>();
@@ -74,7 +74,7 @@ public class BestellBusiness {
                 }
 
 
-                for (int d = tree.size(); d >= 1; d--) {
+                for (int i = tree.size(); i >= 1; i--) {
 
                     TeilCol prodUnterTeilAll = getTeilColDeepCopy(tree.get(i));
                     TeilCol prodUnterTeilPending = getTeilColDeepCopy(tree.get(i));
